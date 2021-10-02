@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 import seoultech.gdsc.web.WebApplicationTests;
 import seoultech.gdsc.web.entity.User;
@@ -51,4 +52,5 @@ public class UserRepositoryTest extends WebApplicationTests {
         }
 //        getUser.ifPresent(user -> assertThat(user).isEqualTo(this.newUser));
     }
+
 }

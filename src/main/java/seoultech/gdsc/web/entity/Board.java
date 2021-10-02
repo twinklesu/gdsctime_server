@@ -30,9 +30,8 @@ public class Board {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne(targetEntity = BoardCategory.class)
-    @JoinColumn(name="category", insertable = false, updatable = false)
-    private BoardCategory category;
+    @Column(nullable = false)
+    private String category;
 
     @Column(nullable = false)
     private String imageUrl;

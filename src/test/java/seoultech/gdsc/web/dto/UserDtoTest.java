@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 import seoultech.gdsc.web.WebApplicationTests;
 import seoultech.gdsc.web.dto.UserDto;
@@ -21,7 +22,11 @@ public class UserDtoTest extends WebApplicationTests {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Test
+    @Transactional
     public void dtoReadTest() {
         User newUser = new User();
         newUser.setName("박수빈");
@@ -34,9 +39,7 @@ public class UserDtoTest extends WebApplicationTests {
         User saved_user = userRepository.save(newUser);
 
         Optional<User> user = userRepository.findById(saved_user.getId());
-
-        ModelMapper modelMapper = new ModelMapper();
-
+//            Optional<User> user = userRepository.findById(2);
         if (user.isPresent()) {
             UserDto userDto = modelMapper.map(user.get(), UserDto.class);
             assertThat(userDto.getName()).isEqualTo(newUser.getName());

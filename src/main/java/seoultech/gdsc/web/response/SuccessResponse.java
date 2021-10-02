@@ -12,4 +12,5 @@ public class SuccessResponse<T> extends BasicResponse{
     public SuccessResponse(T data) {
         this.data = data;
     }
+
 }

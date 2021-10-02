@@ -70,18 +70,33 @@ public class UserServiceTest extends WebApplicationTests{
         System.out.println("#########UserServiceTest:loginTest###########");
         System.out.println("#########success test############");
         LoginDto loginDto = new LoginDto("twinklesu1", "00000");
-        String message = userService.login(loginDto);
-        System.out.println("expect:   , actual: " + message);
-        System.out.println("############end#############");
-        System.out.println("#########wrong password test############");
+        userService.login(loginDto).ifPresent(user -> {
+            try {
+                System.out.println("expect: 옳은 유저 리턴 , actual: " + objectMapper.writeValueAsString(user));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            System.out.println("############end#############");
+            System.out.println("#########wrong password test############");
+        });
         loginDto.setPassword("000");
-        message = userService.login(loginDto);
-        System.out.println("expect: 일치하지 않는 회원정보입니다., actual: " + message);
+        userService.login(loginDto).ifPresent(user -> {
+            try {
+                System.out.println("expect: 일치하지 않는 회원정보입니다., actual: " + objectMapper.writeValueAsString(user));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
         System.out.println("############end#############");
         System.out.println("#########wrong id test############");
         loginDto.setUserId("tttt");
-        message = userService.login(loginDto);
-        System.out.println("expect: 일치하지 않는~~~, actual: " + message);
+        userService.login(loginDto).ifPresent(user -> {
+            try {
+                System.out.println("expect: 일치하지 않는 회원정보입니다., actual: " + objectMapper.writeValueAsString(user));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
         System.out.println("########---END---#########");
     }
 }

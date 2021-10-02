@@ -14,6 +14,8 @@ import seoultech.gdsc.web.response.SuccessResponse;
 import seoultech.gdsc.web.serializer.EmptyJsonResponse;
 import seoultech.gdsc.web.service.UserService;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @RestController
@@ -24,20 +26,24 @@ public class UserController {
 
     private final ObjectMapper objectMapper;
 
+    private final HttpSession session;
+
     @Autowired
-    public UserController(UserService userService, ObjectMapper objectMapper) {
+    public UserController(UserService userService, ObjectMapper objectMapper, HttpSession session) {
         this.userService = userService;
         this.objectMapper = objectMapper;
+        this.session = session;
     }
 
     @GetMapping("")
     public BasicResponse getUser() {
-        int id = 1; // 세션해서 넣어줘야해..
+        int id = (int) session.getAttribute("springSes");
         Optional<UserDto> userDto = userService.userInfoLookup(id);
         if (userDto.isPresent()) {
             return new SuccessResponse<>(userDto.get());
         }
         return new FailResponse<>("");
+//        return new FailResponse<>(id);
     }
 
     @PostMapping("")
@@ -55,12 +61,13 @@ public class UserController {
     // login
     @PostMapping("/login")
     public BasicResponse login(@RequestBody LoginDto loginDto) {
-        String message = userService.login(loginDto);
-        if (message.equals("")) {
+        Optional<User> user = userService.login(loginDto);
+        if (user.isPresent()) {
+            session.setAttribute("springSes", user.get().getId());
             return new SuccessResponse<>(new EmptyJsonResponse());
         }
         else {
-            return new FailResponse<>(message);
+            return new FailResponse<>("일치하지 않는 회원정보 입니다");
         }
     }
 }

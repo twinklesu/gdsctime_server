@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import seoultech.gdsc.web.WebApplicationTests;
+import seoultech.gdsc.web.dto.LoginDto;
 import seoultech.gdsc.web.entity.User;
 import seoultech.gdsc.web.repository.UserRepository;
+import seoultech.gdsc.web.service.UserService;
+
+import javax.servlet.http.Cookie;
+
+import java.util.HashMap;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
@@ -35,25 +43,23 @@ public class UserControllerTest extends WebApplicationTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @BeforeEach
-    public void beforeEach(){
-//        User newUser = new User();
-//        newUser.setName("Subin Park");
-//        newUser.setEmail("twinklesu914@gmail.com");
-//        newUser.setUserId("twinklesu");
-//        newUser.setHp("010-3081-1524");
-//        newUser.setMajor("itm");
-//        newUser.setPassword("990104");
-//        newUser.setNickname("subin");
-//        userRepository.save(newUser);
-    }
+    @Autowired
+    private MockHttpSession session;
+
+    @Autowired
+    private UserService userService;
+
 
     @Transactional
     @Test
     public void getUserTest() throws Exception {
+        session.setAttribute("springSes", 1);
+
         String url = "/api/user";
 
+
         mockMvc.perform(MockMvcRequestBuilders.get(url)
+                .session(session)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(result -> {
                     MockHttpServletResponse response = result.getResponse();

@@ -28,7 +28,8 @@ dependencies {
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.2' // model mapper
 
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.session:spring-session-core'
+//	implementation 'org.springframework.session:spring-session-data-redis'
+//	implementation 'org.springframework.boot:srping-boot-starter-data-redis'
 
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

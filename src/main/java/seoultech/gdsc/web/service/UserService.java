@@ -10,6 +10,7 @@ import seoultech.gdsc.web.dto.UserDto;
 import seoultech.gdsc.web.entity.User;
 import seoultech.gdsc.web.repository.UserRepository;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -62,17 +63,16 @@ public class UserService {
     }
 
     // 로그인
-    public String login(LoginDto loginDto) {
+    public Optional<User> login(LoginDto loginDto) {
         if (userRepository.existsUserByUserId(loginDto.getUserId())) {
             User findUser = userRepository.getUserByUserId(loginDto.getUserId());
             // 아이디 옳으면
             boolean checkPassword = passwordEncoder.matches(loginDto.getPassword(), findUser.getPassword());
             if (checkPassword) {
                 // 로그인 성공
-                // 아무래도 여기서 세션 처리 해야하지 않을까?????
-                return "";
+                return Optional.of(findUser);
             }
         }
-        return "일치하지 않는 회원정보 입니다.";
+        return Optional.empty();
     }
 }

@@ -2,6 +2,7 @@ package seoultech.gdsc.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,10 +28,34 @@ public class UserServiceTest extends WebApplicationTests{
     @Autowired
     private ObjectMapper objectMapper;
 
+    private User newUser;
+    private int sessionId;
+
+    @BeforeEach
+    @Transactional
+    public void beforeEach() {
+        newUser = new User();
+        newUser.setName("Subin Park");
+        newUser.setEmail("twinklesu14@gmail.com");
+        newUser.setUserId("twinklesu14");
+        newUser.setHp("010-3081-1525");
+        newUser.setMajor("itm");
+        newUser.setPassword("990104");
+        newUser.setNickname("subin");
+        userService.userJoin(newUser);
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUserId(newUser.getUserId());
+        loginDto.setPassword(newUser.getPassword());
+        Optional<User> loggedUser = userService.login(loginDto);
+        loggedUser.ifPresent(user -> {
+            sessionId = user.getId();
+        });
+    }
+
     @Test
     @Transactional
     public void userInfoLookupTest() {
-        Optional<UserDto> userDto = userService.userInfoLookup(1);
+        Optional<UserDto> userDto = userService.userInfoLookup(newUser.getId());
         System.out.println("########UserServiceTest: userInfoLookupoTest#########");
         if (userDto.isPresent()) {
             System.out.println("success");
@@ -42,15 +67,7 @@ public class UserServiceTest extends WebApplicationTests{
 
     @Test
     @Transactional
-    public void saveUserTest() throws JsonProcessingException {
-        User newUser = new User();
-        newUser.setName("Subin Park");
-        newUser.setEmail("twinklesu14@gmail.com");
-        newUser.setUserId("twinklesu14");
-        newUser.setHp("010-3081-1525");
-        newUser.setMajor("itm");
-        newUser.setPassword("990104");
-        newUser.setNickname("subin");
+    public void userJoinTest() throws JsonProcessingException {
         String joinResult = userService.userJoin(newUser);
         System.out.print("result: ");
         System.out.println(joinResult);
@@ -63,13 +80,43 @@ public class UserServiceTest extends WebApplicationTests{
         }
     }
 
+    @Test
+    @Transactional
+    public void updateNicknameTest() {
+        String newNick = "subinnnn";
+        System.out.println("#########UserServiceTest: updateNicknameTest###########");
+        System.out.println("success test");
+        Optional<User> updatedUser = userService.updateNickname(sessionId, newNick);
+        updatedUser.ifPresent(user -> {
+            System.out.println("expected: " + newNick + "actual: "+ user.getNickname());
+        });
+        System.out.println("FAIL TEST");
+        User anotherUser = new User();
+        anotherUser.setUserId("temp");
+        anotherUser.setPassword("0000");
+        anotherUser.setHp("000-0000-0000");
+        anotherUser.setMajor("major");
+        anotherUser.setEmail("temp@temp.com");
+        anotherUser.setName("temp");
+        anotherUser.setNickname("subin");
+        userService.userJoin(anotherUser);
+
+        Optional<User> updateUser = userService.updateNickname(sessionId, "subin");
+        if (updateUser.isPresent()) {
+            System.out.println("duplicate nickname test fail");
+        } else {
+            System.out.println("dupicate nicknmae test success");
+        }
+        System.out.println("############end#############");
+    }
 
     @Test
     @Transactional
     public void loginTest() {
         System.out.println("#########UserServiceTest:loginTest###########");
+        userService.userJoin(newUser);
         System.out.println("#########success test############");
-        LoginDto loginDto = new LoginDto("twinklesu1", "00000");
+        LoginDto loginDto = new LoginDto("twinklesu14", "990104");
         userService.login(loginDto).ifPresent(user -> {
             try {
                 System.out.println("expect: 옳은 유저 리턴 , actual: " + objectMapper.writeValueAsString(user));

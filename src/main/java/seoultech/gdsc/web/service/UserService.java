@@ -62,6 +62,29 @@ public class UserService {
         return "";
     }
 
+    /*
+    닉네임 변경
+     */
+    public Optional<User> updateNickname(int id, String newNick) {
+        // 닉네임 중복 테스트
+        if (userRepository.existsUserByNickname(newNick)) {
+            // 중복
+            return Optional.empty();
+        }
+        // 변경
+        User user = userRepository.getById(id);
+        user.setNickname(newNick);
+        userRepository.save(user);
+        return Optional.of(user);
+    }
+
+    /*
+    회원 탈퇴
+     */
+    public void deleteUser(int id) {
+        userRepository.delete(userRepository.getById(id));
+    }
+
     // 로그인
     public Optional<User> login(LoginDto loginDto) {
         if (userRepository.existsUserByUserId(loginDto.getUserId())) {
@@ -75,4 +98,6 @@ public class UserService {
         }
         return Optional.empty();
     }
+
+
 }

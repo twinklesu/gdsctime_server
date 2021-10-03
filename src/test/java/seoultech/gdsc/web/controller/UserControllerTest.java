@@ -1,20 +1,14 @@
 package seoultech.gdsc.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +20,7 @@ import seoultech.gdsc.web.service.UserService;
 
 import javax.servlet.http.Cookie;
 
-import java.util.HashMap;
+import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
@@ -49,6 +43,30 @@ public class UserControllerTest extends WebApplicationTests {
     @Autowired
     private UserService userService;
 
+    private int sessionId;
+    private User newUser;
+
+    @Transactional
+    public void before() throws Exception {
+        newUser = new User();
+        newUser.setName("Subin Park");
+        newUser.setEmail("twinklesu14@gmail.com");
+        newUser.setUserId("twinklesu14");
+        newUser.setHp("010-3081-1525");
+        newUser.setMajor("itm");
+        newUser.setPassword("990104");
+        newUser.setNickname("subin");
+        userService.userJoin(newUser);
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUserId(newUser.getUserId());
+        loginDto.setPassword("990104");
+        Optional<User> loggedUser = userService.login(loginDto);
+        loggedUser.ifPresent(user -> {
+            sessionId = user.getId();
+            session.setAttribute("springSec", sessionId);
+        });
+    }
+
 
     @Transactional
     @Test
@@ -56,7 +74,6 @@ public class UserControllerTest extends WebApplicationTests {
         session.setAttribute("springSes", 1);
 
         String url = "/api/user";
-
 
         mockMvc.perform(MockMvcRequestBuilders.get(url)
                 .session(session)
@@ -98,6 +115,47 @@ public class UserControllerTest extends WebApplicationTests {
         System.out.println("#########end##########");
     }
 
+    /*
+    회원정보 수정 아 컨트롤러는 그냥 postman 해야겟어 개빡쳐.....
+     */
+//    @Test
+//    @Transactional
+//    public void putUserTest() throws Exception {
+//        newUser = new User();
+//        newUser.setName("Subin Park");
+//        newUser.setEmail("twinklesu14@gmail.com");
+//        newUser.setUserId("twinklesu14");
+//        newUser.setHp("010-3081-1525");
+//        newUser.setMajor("itm");
+//        newUser.setPassword("990104");
+//        newUser.setNickname("subin");
+//        userService.userJoin(newUser);
+//        LoginDto loginDto = new LoginDto();
+//        loginDto.setUserId(newUser.getUserId());
+//        loginDto.setPassword("990104");
+//        Optional<User> loggedUser = userService.login(loginDto);
+//        loggedUser.ifPresent(user -> {
+//            sessionId = user.getId();
+//            session.setAttribute("springSec", sessionId);
+//        });
+//        String url = "/api/user";
+//
+//        String request = "{\"nickname\": \"subin_new\"}";
+//
+//        System.out.println("########UserControllerTest: putUser test#########");
+//        System.out.println("Request: " + request);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.put(url)
+//                .content(request)
+//                .session(session)
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(result -> {
+//                    MockHttpServletResponse response = result.getResponse();
+//                    System.out.println("Response: " + response.getContentAsString());
+//                });
+//        System.out.println("##########end##############");
+//    }
+
 
     // login
     @Test
@@ -115,7 +173,7 @@ public class UserControllerTest extends WebApplicationTests {
         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(result -> {
                     MockHttpServletResponse response = result.getResponse();
-                    System.out.println("response: " + response.getContentAsString());
+                    System.out.println("response: " + response);
                 });
 
 

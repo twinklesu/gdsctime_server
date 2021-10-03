@@ -3,8 +3,10 @@ package seoultech.gdsc.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.header.Header;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.function.ServerRequest;
 import seoultech.gdsc.web.dto.LoginDto;
 import seoultech.gdsc.web.dto.UserDto;
 import seoultech.gdsc.web.entity.User;
@@ -24,17 +26,17 @@ public class UserController {
 
     private final UserService userService;
 
-    private final ObjectMapper objectMapper;
-
     private final HttpSession session;
 
     @Autowired
-    public UserController(UserService userService, ObjectMapper objectMapper, HttpSession session) {
+    public UserController(UserService userService, HttpSession session) {
         this.userService = userService;
-        this.objectMapper = objectMapper;
         this.session = session;
     }
 
+    /*
+    사용자 정보 조회
+     */
     @GetMapping("")
     public BasicResponse getUser() {
         int id = (int) session.getAttribute("springSes");
@@ -43,19 +45,46 @@ public class UserController {
             return new SuccessResponse<>(userDto.get());
         }
         return new FailResponse<>("");
-//        return new FailResponse<>(id);
     }
 
+    /*
+    회원가입
+     */
     @PostMapping("")
     public BasicResponse saveUser(@RequestBody() User user){
         String message = userService.userJoin(user);
         if (message.equals("")) {
-            return new SuccessResponse<User>(null);
+            return new SuccessResponse<>(new EmptyJsonResponse());
         }
         else {
-            return new FailResponse<User>(message);
+            return new FailResponse<>(message);
         }
     }
+
+    /*
+    회원정보 수정
+     */
+    @PutMapping("")
+    public BasicResponse putUser(@RequestBody User user) {
+        int id = (int) session.getAttribute("springSes");
+        Optional<User> updatedUser = userService.updateNickname(id, user.getNickname());
+        if (updatedUser.isPresent()) {
+            return new SuccessResponse<>(new EmptyJsonResponse());
+        } else {
+            return new FailResponse<>("닉네임이 중복되었습니다");
+        }
+    }
+
+    /*
+    회원 탈퇴
+     */
+    @DeleteMapping("")
+    public BasicResponse deleteUser() {
+        int id = (int) session.getAttribute("springSes");
+        userService.deleteUser(id);
+        return new SuccessResponse<>(new EmptyJsonResponse());
+    }
+
 
 
     // login

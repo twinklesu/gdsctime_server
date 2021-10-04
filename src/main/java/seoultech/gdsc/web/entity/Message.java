@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,19 +22,17 @@ public class Message {
     private int id;
 
     @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name="fromUser", insertable = false, updatable = false)
     private User fromUser;
 
     @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name="toUser", insertable = false, updatable = false)
     private User toUser;
 
     @Column(nullable = false)
     private String content;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }

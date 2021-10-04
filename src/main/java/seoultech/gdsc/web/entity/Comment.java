@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,26 +22,24 @@ public class Comment {
     private int id;
 
     @ManyToOne(targetEntity = Board.class)
-    @JoinColumn(name="boardId", insertable = false, updatable = false)
     private Board board;
 
     @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name="userId", insertable = false, updatable = false)
     private User user;
 
     @Column(nullable = false)
     private String content;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean isSecret;
+    private Boolean isSecret = true;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private int likeNum;
+    private int likeNum = 0;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
 }

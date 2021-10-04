@@ -85,9 +85,9 @@ public class UserController {
         return new SuccessResponse<>(new EmptyJsonResponse());
     }
 
-
-
-    // login
+    /*
+    로그인
+     */
     @PostMapping("/login")
     public BasicResponse login(@RequestBody LoginDto loginDto) {
         Optional<User> user = userService.login(loginDto);
@@ -98,5 +98,15 @@ public class UserController {
         else {
             return new FailResponse<>("일치하지 않는 회원정보 입니다");
         }
+    }
+
+    /*
+    로그아웃
+     */
+    @GetMapping("/logout")
+    public BasicResponse logout() {
+        int id = (int) session.getAttribute("springSes");
+        session.invalidate();
+        return new SuccessResponse<>(new EmptyJsonResponse());
     }
 }

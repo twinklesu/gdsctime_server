@@ -1,4 +1,4 @@
-package seoultech.gdsc.web;
+package seoultech.gdsc.web.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
+import seoultech.gdsc.web.WebApplicationTests;
 import seoultech.gdsc.web.dto.LoginDto;
 import seoultech.gdsc.web.dto.UserDto;
 import seoultech.gdsc.web.entity.User;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @Transactional
 @SpringBootTest
-public class UserServiceTest extends WebApplicationTests{
+public class UserServiceTest extends WebApplicationTests {
 
     @Autowired
     private UserService userService;

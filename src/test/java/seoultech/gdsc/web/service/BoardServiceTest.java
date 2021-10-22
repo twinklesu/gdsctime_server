@@ -33,7 +33,7 @@ public class BoardServiceTest extends WebApplicationTests {
     @Transactional
     public void getBoardDetailTest() throws JsonProcessingException {
         System.out.println("###########getBoardDetailTest#############");
-        BoardDto.Response res = boardService.getBoardDetail(2);
+        BoardDto.DetailResponse res = boardService.getBoardDetail(2);
         System.out.println(objectMapper.writeValueAsString(res));
         res = boardService.getBoardDetail(3);
         System.out.println(objectMapper.writeValueAsString(res));
@@ -44,12 +44,11 @@ public class BoardServiceTest extends WebApplicationTests {
     public void writeNewTest() throws JsonProcessingException {
         System.out.println("##########writeNewTest##########");
         BoardDto.Request req = new BoardDto.Request();
-        req.setCategory(1);
+        req.setCategoryId(1);
         req.setTitle("service로 글 작성하기");
         req.setContent("성공 가즈아아아아아ㅏ아");
         req.setIsSecret(true);
         System.out.println("request: " + objectMapper.writeValueAsString(req));
-        BoardDto.Response res = boardService.writeNew(req, 92);
-        System.out.println("response: " + objectMapper.writeValueAsString(res));
+        boardService.writeNew(req, 1);
     }
 }

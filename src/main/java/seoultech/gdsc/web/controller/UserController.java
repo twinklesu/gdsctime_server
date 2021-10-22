@@ -40,7 +40,7 @@ public class UserController {
     @GetMapping("")
     public BasicResponse getUser() {
         int id = (int) session.getAttribute("springSes");
-        Optional<UserDto> userDto = userService.userInfoLookup(id);
+        Optional<UserDto.Response> userDto = userService.userInfoLookup(id);
         if (userDto.isPresent()) {
             return new SuccessResponse<>(userDto.get());
         }
@@ -51,7 +51,7 @@ public class UserController {
     회원가입
      */
     @PostMapping("")
-    public BasicResponse saveUser(@RequestBody() User user){
+    public BasicResponse saveUser(@RequestBody() UserDto.Request user){
         String message = userService.userJoin(user);
         if (message.equals("")) {
             return new SuccessResponse<>(new EmptyJsonResponse());

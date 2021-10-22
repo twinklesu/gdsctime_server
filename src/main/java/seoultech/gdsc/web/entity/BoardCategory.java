@@ -13,35 +13,15 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Board {
+public class BoardCategory {
 
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(targetEntity = User.class)
-    private User user;
-
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
-    private String content;
-
-    @ManyToOne(targetEntity = BoardCategory.class)
-    private BoardCategory boardCategory;
-
-    private String imageUrl;
-
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean isSecret = true;
-
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private int likeNum = 0;
-
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private int commentNum = 0;
+    private String categoryName;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt = LocalDateTime.now();

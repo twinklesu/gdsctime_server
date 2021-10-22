@@ -29,24 +29,24 @@ public class UserServiceTest extends WebApplicationTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private User newUser;
+    private UserDto.Request userReq;
     private int sessionId;
 
     @BeforeEach
     @Transactional
     public void beforeEach() {
-        newUser = new User();
-        newUser.setName("Subin Park");
-        newUser.setEmail("twinklesu14@gmail.com");
-        newUser.setUserId("twinklesu14");
-        newUser.setHp("010-3081-1525");
-        newUser.setMajor("itm");
-        newUser.setPassword("990104");
-        newUser.setNickname("subin");
-        userService.userJoin(newUser);
+        userReq = new UserDto.Request();
+        userReq.setName("Subin Park");
+        userReq.setEmail("twinklesu14@gmail.com");
+        userReq.setUserId("twinklesu14");
+        userReq.setHp("010-3081-1525");
+        userReq.setMajor("itm");
+        userReq.setPassword("990104");
+        userReq.setNickname("subin");
+        userService.userJoin(userReq);
         LoginDto loginDto = new LoginDto();
-        loginDto.setUserId(newUser.getUserId());
-        loginDto.setPassword(newUser.getPassword());
+        loginDto.setUserId(userReq.getUserId());
+        loginDto.setPassword(userReq.getPassword());
         Optional<User> loggedUser = userService.login(loginDto);
         loggedUser.ifPresent(user -> {
             sessionId = user.getId();
@@ -55,21 +55,17 @@ public class UserServiceTest extends WebApplicationTests {
 
     @Test
     @Transactional
-    public void userInfoLookupTest() {
-        Optional<UserDto> userDto = userService.userInfoLookup(newUser.getId());
+    public void userInfoLookupTest() throws JsonProcessingException {
+        Optional<UserDto.Response> userDto = userService.userInfoLookup(1);
         System.out.println("########UserServiceTest: userInfoLookupoTest#########");
-        if (userDto.isPresent()) {
-            System.out.println("success");
-        } else {
-            System.out.println("fail");
-        }
+        System.out.println(objectMapper.writeValueAsString(userDto));
         System.out.println("########end###########");
     }
 
     @Test
     @Transactional
     public void userJoinTest() throws JsonProcessingException {
-        String joinResult = userService.userJoin(newUser);
+        String joinResult = userService.userJoin(userReq);
         System.out.print("result: ");
         System.out.println(joinResult);
         if (joinResult.equals("")) {
@@ -92,7 +88,7 @@ public class UserServiceTest extends WebApplicationTests {
             System.out.println("expected: " + newNick + "actual: "+ user.getNickname());
         });
         System.out.println("FAIL TEST");
-        User anotherUser = new User();
+        UserDto.Request anotherUser = new UserDto.Request();
         anotherUser.setUserId("temp");
         anotherUser.setPassword("0000");
         anotherUser.setHp("000-0000-0000");
@@ -115,7 +111,7 @@ public class UserServiceTest extends WebApplicationTests {
     @Transactional
     public void loginTest() {
         System.out.println("#########UserServiceTest:loginTest###########");
-        userService.userJoin(newUser);
+        userService.userJoin(userReq);
         System.out.println("#########success test############");
         LoginDto loginDto = new LoginDto("twinklesu14", "990104");
         userService.login(loginDto).ifPresent(user -> {

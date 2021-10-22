@@ -10,7 +10,6 @@ import seoultech.gdsc.web.dto.UserDto;
 import seoultech.gdsc.web.entity.User;
 import seoultech.gdsc.web.repository.UserRepository;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -27,17 +26,17 @@ public class UserService {
 
     }
 
-    public Optional<UserDto> userInfoLookup(int id) {
+    public Optional<UserDto.Response> userInfoLookup(int id) {
         Optional<User> user = userRepository.findById(id);
-        UserDto userDto = new UserDto();
+        UserDto.Response userDto = new UserDto.Response();
         if (user.isPresent()) {
-            userDto = modelMapper.map(user.get(), UserDto.class);
+            userDto = modelMapper.map(user.get(), UserDto.Response.class);
             return Optional.of(userDto);
         }
         return Optional.empty();
     }
 
-    public String userJoin(User user) {
+    public String userJoin(UserDto.Request user) {
         // user_id duplicate check
         if (userRepository.existsUserByUserId(user.getUserId())){
             return "아이디가 중복되었습니다";
@@ -54,11 +53,12 @@ public class UserService {
         if (userRepository.existsUserByHp(user.getHp())) {
             return "전화번호가 중복되었습니다";
         }
+        User newUser = modelMapper.map(user, User.class);
         // password encode
         String encodePassword = passwordEncoder.encode(user.getPassword());
 
-        user.setPassword(encodePassword);
-        userRepository.save(user);
+        newUser.setPassword(encodePassword);
+        userRepository.save(newUser);
         return "";
     }
 

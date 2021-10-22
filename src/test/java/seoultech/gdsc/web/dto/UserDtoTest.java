@@ -1,7 +1,10 @@
 package seoultech.gdsc.web.dto;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -20,38 +23,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserDtoTest extends WebApplicationTests {
 
     @Autowired
-    private UserRepository userRepository;
+    private ObjectMapper objectMapper;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Test
     @Transactional
-    public void dtoReadTest() {
-        User newUser = new User();
-        newUser.setName("박수빈");
-        newUser.setEmail("twinklesu914@gmail.com");
-        newUser.setUserId("twinklesu");
-        newUser.setHp("010-3081-1524");
-        newUser.setMajor("itm");
-        newUser.setPassword("990104");
-        newUser.setNickname("숩니");
-        User saved_user = userRepository.save(newUser);
-
-        Optional<User> user = userRepository.findById(saved_user.getId());
-//            Optional<User> user = userRepository.findById(2);
-        if (user.isPresent()) {
-            UserDto userDto = modelMapper.map(user.get(), UserDto.class);
-            assertThat(userDto.getName()).isEqualTo(newUser.getName());
-            assertThat(userDto.getEmail()).isEqualTo(newUser.getEmail());
-            assertThat(userDto.getUserId()).isEqualTo(newUser.getUserId());
-            assertThat(userDto.getHp()).isEqualTo(newUser.getHp());
-            assertThat(userDto.getNickname()).isEqualTo(newUser.getNickname());
-            assertThat(userDto.getIsAuth()).isEqualTo(newUser.getIsAuth());
-            assertThat(userDto.getProfilePic()).isEqualTo(newUser.getProfilePic());
-        } else {
-            System.out.println("#############################################");
-            System.out.println("UserDtoTest: dtoReadTest Fail");
-        }
+    public void RequestTest() throws JsonProcessingException {
+        UserDto.Request req = new UserDto.Request();
+        req.setUserId("twinklesu");
+        req.setPassword("0104");
+        req.setEmail("twinklesu914@gamil.com");
+        req.setName("박수빈");
+        req.setNickname("숩니");
+        req.setMajor("ITM");
+        req.setHp("01030811524");
+        User user = modelMapper.map(req, User.class);
+        System.out.println(objectMapper.writeValueAsString(user));
     }
 }

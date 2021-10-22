@@ -21,6 +21,9 @@ public class UserRepositoryTest extends WebApplicationTests {
     @Autowired
     private UserRepository userRepository;
 
+
+
+
     private User newUser;
 
     @BeforeEach
@@ -51,6 +54,22 @@ public class UserRepositoryTest extends WebApplicationTests {
             System.out.println("UserRepositoryTest: getUserTest Fail");
         }
 //        getUser.ifPresent(user -> assertThat(user).isEqualTo(this.newUser));
+    }
+
+    @Test
+    @Transactional
+    public void saveUserTest(){
+
+        newUser = new User();
+        this.newUser.setName("Subin Park");
+        this.newUser.setEmail("twinklesu914@gmail.com");
+        this.newUser.setUserId("twinklesu");
+        this.newUser.setHp("010-3081-1524");
+        this.newUser.setMajor("itm");
+        this.newUser.setPassword("990104");
+        this.newUser.setNickname("subin");
+
+        this.userRepository.save(newUser);
     }
 
 }

@@ -13,6 +13,7 @@ import seoultech.gdsc.web.service.CommentService;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/board")
@@ -75,4 +76,36 @@ public class BoardController {
         commentService.writeNew(newComment, sessionId);
         return new SuccessResponse<>(new EmptyJsonResponse());
     }
+
+    //
+    // 여기서 부터 BoardMain으로 나눠도 될 것 같기두.....
+    //
+    /*
+    각 게시판의 최신 글 조회
+     */
+    @GetMapping("/main/myboard")
+    public BasicResponse getMyBoard() {
+        List<BoardDto.RecentResponse> res = boardService.getRecentBoard();
+        return new SuccessResponse<>(res);
+    }
+
+    /*
+    메인용 핫 게시판
+     */
+//    @GetMapping("/main/hot")
+//    public BasicResponse getHotBoard() {
+//        List<BoardDto.HotResponse> res = boardService.getHotBoard();
+//        return new SuccessResponse<>(res);
+//    }
+
+    /*
+    전체 게시글 검색
+     */
+    @PostMapping("/search")
+    public BasicResponse postSearchAll(@RequestBody Map<String, String> reqBody) {
+        String word = reqBody.get("word");
+        List<BoardDto.SearchResponse> res = boardService.searchAll(word);
+        return new SuccessResponse<>(res);
+    }
+
 }

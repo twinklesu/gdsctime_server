@@ -43,6 +43,32 @@ public class BoardDto {
     @AllArgsConstructor
     @Getter
     @Setter
+    public static class RecentResponse {
+        private int id;
+        private int boardCategoryId;
+        private String title;
+        private String content;
+        private String createdAt;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class SearchResponse {
+        private int id;
+        private String title;
+        private String content;
+        private int likeNum;
+        private int commentNum;
+        private String nickName;
+        private String createdAt;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class Request {
         private int categoryId;
         private String title;

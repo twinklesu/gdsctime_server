@@ -51,4 +51,20 @@ public class BoardServiceTest extends WebApplicationTests {
         System.out.println("request: " + objectMapper.writeValueAsString(req));
         boardService.writeNew(req, 1);
     }
+
+    @Test
+    @Transactional
+    public void getRecentBoardTest() throws JsonProcessingException {
+        System.out.println("#####getRecentBaordTest#######");
+        List<BoardDto.RecentResponse> res = boardService.getRecentBoard();
+        System.out.println(objectMapper.writeValueAsString(res));
+    }
+
+    @Test
+    @Transactional
+    public void searchAllTest() throws JsonProcessingException {
+        System.out.println("#######searchBoardTest########");
+        List<BoardDto.SearchResponse> res = boardService.searchAll("내용");
+        System.out.println(objectMapper.writeValueAsString(res));
+    }
 }

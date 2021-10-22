@@ -29,6 +29,15 @@ public class BoardRepositoryTest extends WebApplicationTests {
         System.out.println(objectMapper.writeValueAsString(boardList));
         System.out.println("#########End#############");
     }
+
+    @Test
+    @Transactional
+    public void searchAllTest() throws JsonProcessingException {
+        System.out.println("########searchAllTest###########");
+        List<Board> boardList = boardRepository.findAllByContentContaining("내용");
+        System.out.println(objectMapper.writeValueAsString(boardList));
+        System.out.println("##########END###############");
+    }
 }
 
 

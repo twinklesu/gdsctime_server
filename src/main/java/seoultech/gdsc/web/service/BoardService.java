@@ -3,10 +3,8 @@ package seoultech.gdsc.web.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import seoultech.gdsc.web.dto.BoardDto;
 import seoultech.gdsc.web.entity.Board;
-import seoultech.gdsc.web.entity.BoardCategory;
 import seoultech.gdsc.web.entity.User;
 import seoultech.gdsc.web.repository.BoardCategoryRepository;
 import seoultech.gdsc.web.repository.BoardRepository;
@@ -14,8 +12,6 @@ import seoultech.gdsc.web.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -117,7 +113,32 @@ public class BoardService {
     전체 글 검색
      */
     public List<BoardDto.SearchResponse> searchAll(String word) {
-        List<BoardDto.SearchResponse> res = boardRepository.findAllByContentContaining(word).stream().map(board -> {
+        // jpql은 entity field에 맞춰 작성
+        String jpql = "select board from Board board where board.content like '%" + word + "%' or board.title like '%" + word + "%'";
+        Query query = entityManager.createQuery(jpql);
+        List<Board> boards = query.getResultList();
+        List<BoardDto.SearchResponse> res = boards.stream().map(board -> {
+            BoardDto.SearchResponse boardDto = modelMapper.map(board, BoardDto.SearchResponse.class);
+            boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
+            if (board.getIsSecret()) {
+                boardDto.setNickName("익명");
+            } else {
+                boardDto.setNickName(board.getUser().getNickname());
+            }
+            return boardDto;
+        }).collect(Collectors.toList());
+        return res;
+    }
+
+    /*
+    카테고리 별 글 검색
+     */
+    public List<BoardDto.SearchResponse> searchCategory(int category, String word) {
+        // jpql은 entity field에 맞춰 작성
+        String jpql = "select board from Board board where (board.content like '%" + word + "%' or board.title like '%" + word + "%') and board.boardCategory.id = " + category;
+        Query query = entityManager.createQuery(jpql);
+        List<Board> boards = query.getResultList();
+        List<BoardDto.SearchResponse> res = boards.stream().map(board -> {
             BoardDto.SearchResponse boardDto = modelMapper.map(board, BoardDto.SearchResponse.class);
             boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
             if (board.getIsSecret()) {

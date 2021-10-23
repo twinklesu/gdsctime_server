@@ -67,4 +67,12 @@ public class BoardServiceTest extends WebApplicationTests {
         List<BoardDto.SearchResponse> res = boardService.searchAll("내용");
         System.out.println(objectMapper.writeValueAsString(res));
     }
+
+    @Test
+    @Transactional
+    public void searchCategoryTest() throws JsonProcessingException {
+        System.out.println("#######searchCategoryTest########");
+        List<BoardDto.SearchResponse> res = boardService.searchCategory(4,"내용");
+        System.out.println(objectMapper.writeValueAsString(res));
+    }
 }

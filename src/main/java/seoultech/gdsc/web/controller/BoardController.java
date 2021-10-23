@@ -108,4 +108,14 @@ public class BoardController {
         return new SuccessResponse<>(res);
     }
 
+    /*
+    게시판 별 검색
+     */
+    @PostMapping("/{category}/search")
+    public BasicResponse postSearchCategory(@PathVariable int category, @RequestBody Map<String, String> reqBody) {
+        String word = reqBody.get("word");
+        List<BoardDto.SearchResponse> res = boardService.searchCategory(category, word);
+        return new SuccessResponse<>(res);
+    }
+
 }

@@ -11,6 +11,8 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<Board, Integer> {
     List<Board> findAllByBoardCategory_Id(@Param(value = "categoryId") int categoryId);
     List<Board> findAllByUser_Id(@Param(value = "userId") int userId);
-    List<Board> findAllByIsHot(@Param(value = "isHot") Boolean isHot);
-    List<Board> findTop2ByIsHotOrderByCreatedAt(@Param(value = "isHot") Boolean isHot);
+    List<Board> findAllByIsHotOrderByCreatedAtDesc(@Param(value = "isHot") Boolean isHot);
+    List<Board> findTop2ByIsHotOrderByCreatedAtDesc(@Param(value = "isHot") Boolean isHot);
+    List<Board> findTop2ByIsHotAndBoardCategory_IdOrderByCreatedAtDesc(@Param(value = "isHot") Boolean isHot, @Param(value = "boardCategory") int BoardCategory);
+    List<Board> findTop2ByBoardCategory_IdOrderByCreatedAtDesc(@Param(value = "boardCategory") int BoardCategory);
 }

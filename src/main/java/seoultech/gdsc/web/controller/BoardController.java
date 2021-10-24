@@ -11,9 +11,11 @@ import seoultech.gdsc.web.serializer.EmptyJsonResponse;
 import seoultech.gdsc.web.service.BoardService;
 import seoultech.gdsc.web.service.CommentService;
 
+import javax.persistence.Basic;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 @RestController
 @RequestMapping("/api/board")
@@ -95,6 +97,21 @@ public class BoardController {
     @GetMapping("/main/hot")
     public BasicResponse getHotBoard() {
         List<BoardDto.HotResponse> res = boardService.getHotBoard();
+        return new SuccessResponse<>(res);
+    }
+
+    /*
+    실시간 게시판
+     */
+
+    /*
+    카테고리별 핫 게시물
+     */
+    @GetMapping("/main/filter")
+    public BasicResponse getMainFilter(@RequestParam(value="category") int category,
+                                       @RequestParam(value="hot") int hot) {
+        boolean isHot = hot != 0;
+        List<BoardDto.HotResponse> res = boardService.getFilteredBoard(category, isHot);
         return new SuccessResponse<>(res);
     }
 

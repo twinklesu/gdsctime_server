@@ -44,7 +44,7 @@ public class BoardService {
     public List<BoardDto.Response> getCategoryList(int categoryId) {
         List<Board> boards;
         if (categoryId == 7) {
-            boards = boardRepository.findAllByIsHot(true);
+            boards = boardRepository.findAllByIsHotOrderByCreatedAtDesc(true);
         } else {
             boards = boardRepository.findAllByBoardCategory_Id(categoryId);
         }
@@ -111,7 +111,7 @@ public class BoardService {
     핫 게시글 조회
      */
     public List<BoardDto.HotResponse> getHotBoard() {
-        List<Board> boardList = boardRepository.findTop2ByIsHotOrderByCreatedAt(true);
+        List<Board> boardList = boardRepository.findTop2ByIsHotOrderByCreatedAtDesc(true);
         List<BoardDto.HotResponse> responses = boardList.stream().map(board -> {
             BoardDto.HotResponse boardDto = modelMapper.map(board, BoardDto.HotResponse.class);
             // "2021-10-04T07:02:29.000+00:00" -> yyMMdd
@@ -120,6 +120,28 @@ public class BoardService {
         }).collect(Collectors.toList());
         return responses;
     }
+
+    /*
+    카테고리 별 최신2개, 최신핫게2개
+     */
+    public List<BoardDto.HotResponse> getFilteredBoard(int category, Boolean isHot) {
+        List<BoardDto.HotResponse> response;
+        List<Board> boards;
+        if (isHot) {
+            // 핫게만
+            boards = boardRepository.findTop2ByIsHotAndBoardCategory_IdOrderByCreatedAtDesc(isHot, category);
+        } else {
+            // 모든글에서
+            boards = boardRepository.findTop2ByBoardCategory_IdOrderByCreatedAtDesc(category);
+        }
+        response = boards.stream().map(board -> {
+            BoardDto.HotResponse boardDto = modelMapper.map(board, BoardDto.HotResponse.class);
+            boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
+            return boardDto;
+        }).collect(Collectors.toList());
+        return response;
+    }
+
 
     /*
     전체 글 검색

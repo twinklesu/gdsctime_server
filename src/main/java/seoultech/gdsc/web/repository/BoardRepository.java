@@ -12,4 +12,5 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
     List<Board> findAllByBoardCategory_Id(@Param(value = "categoryId") int categoryId);
     List<Board> findAllByUser_Id(@Param(value = "userId") int userId);
     List<Board> findAllByIsHot(@Param(value = "isHot") Boolean isHot);
+    List<Board> findTop2ByIsHotOrderByCreatedAt(@Param(value = "isHot") Boolean isHot);
 }

@@ -75,4 +75,11 @@ public class BoardServiceTest extends WebApplicationTests {
         List<BoardDto.SearchResponse> res = boardService.searchCategory(4,"내용");
         System.out.println(objectMapper.writeValueAsString(res));
     }
+
+    @Test
+    @Transactional
+    public void getHotBoard() throws JsonProcessingException {
+        List<BoardDto.HotResponse> res = boardService.getHotBoard();
+        System.out.println(objectMapper.writeValueAsString(res));
+    }
 }

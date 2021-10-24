@@ -110,9 +110,16 @@ public class BoardService {
     /*
     핫 게시글 조회
      */
-//    public List<BoardDto.HotResponse> getHotBoard() {
-//
-//    }
+    public List<BoardDto.HotResponse> getHotBoard() {
+        List<Board> boardList = boardRepository.findTop2ByIsHotOrderByCreatedAt(true);
+        List<BoardDto.HotResponse> responses = boardList.stream().map(board -> {
+            BoardDto.HotResponse boardDto = modelMapper.map(board, BoardDto.HotResponse.class);
+            // "2021-10-04T07:02:29.000+00:00" -> yyMMdd
+            boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
+            return boardDto;
+        }).collect(Collectors.toList());
+        return responses;
+    }
 
     /*
     전체 글 검색

@@ -92,11 +92,11 @@ public class BoardController {
     /*
     메인용 핫 게시판
      */
-//    @GetMapping("/main/hot")
-//    public BasicResponse getHotBoard() {
-//        List<BoardDto.HotResponse> res = boardService.getHotBoard();
-//        return new SuccessResponse<>(res);
-//    }
+    @GetMapping("/main/hot")
+    public BasicResponse getHotBoard() {
+        List<BoardDto.HotResponse> res = boardService.getHotBoard();
+        return new SuccessResponse<>(res);
+    }
 
     /*
     전체 게시글 검색

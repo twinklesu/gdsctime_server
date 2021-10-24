@@ -69,6 +69,19 @@ public class BoardDto {
     @AllArgsConstructor
     @Getter
     @Setter
+    public static class HotResponse {
+        private int id;
+        private String title;
+        private String content;
+        private int likeNum;
+        private int commentNum;
+        private String createdAt;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class Request {
         private int categoryId;
         private String title;

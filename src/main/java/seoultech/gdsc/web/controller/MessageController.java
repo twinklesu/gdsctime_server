@@ -59,6 +59,6 @@ public class MessageController {
         if ((Boolean) result.get("state")) {
             return new SuccessResponse<>(result.get("msg_id"));
         }
-        return new FailResponse<String>((String) result.get("msg"));
+        return new FailResponse<>((String) result.get("msg"), new EmptyJsonResponse());
     }
 }

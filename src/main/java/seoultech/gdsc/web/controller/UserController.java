@@ -18,6 +18,7 @@ import seoultech.gdsc.web.service.UserService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -44,7 +45,7 @@ public class UserController {
         if (userDto.isPresent()) {
             return new SuccessResponse<>(userDto.get());
         }
-        return new FailResponse<>("");
+        return new FailResponse<>("", new EmptyJsonResponse());
     }
 
     /*
@@ -57,7 +58,7 @@ public class UserController {
             return new SuccessResponse<>(new EmptyJsonResponse());
         }
         else {
-            return new FailResponse<>(message);
+            return new FailResponse<>(message, new EmptyJsonResponse());
         }
     }
 
@@ -71,7 +72,9 @@ public class UserController {
         if (updatedUser.isPresent()) {
             return new SuccessResponse<>(new EmptyJsonResponse());
         } else {
-            return new FailResponse<>("닉네임이 중복되었습니다");
+            HashMap<String, String> res = new HashMap<>();
+            res.put("nickname", user.getNickname());
+            return new FailResponse<>("닉네임이 중복되었습니다", res);
         }
     }
 
@@ -96,7 +99,7 @@ public class UserController {
             return new SuccessResponse<>(new EmptyJsonResponse());
         }
         else {
-            return new FailResponse<>("일치하지 않는 회원정보 입니다");
+            return new FailResponse<>("일치하지 않는 회원정보 입니다", new EmptyJsonResponse());
         }
     }
 

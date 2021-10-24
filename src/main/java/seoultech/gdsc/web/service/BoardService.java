@@ -42,7 +42,12 @@ public class BoardService {
     특정 카테고리의 모든 글 조회
      */
     public List<BoardDto.Response> getCategoryList(int categoryId) {
-        List<Board> boards = boardRepository.findAllByBoardCategory_Id(categoryId);
+        List<Board> boards;
+        if (categoryId == 7) {
+            boards = boardRepository.findAllByIsHot(true);
+        } else {
+            boards = boardRepository.findAllByBoardCategory_Id(categoryId);
+        }
         List<BoardDto.Response> responses = boards.stream().map(board -> {
             BoardDto.Response boardDto = modelMapper.map(board, BoardDto.Response.class);
             // "2021-10-04T07:02:29.000+00:00" -> yyMMdd
@@ -90,7 +95,7 @@ public class BoardService {
         // jpql은 entity field에 맞춰 작성
         String jpql = "select board from Board board where board.id in " +
                 "(select max(board.id) from board group by board.boardCategory)" +
-                "order by board.boardCategory.id asc";
+                "and board.boardCategory.id <= 6 order by board.boardCategory.id asc";
         Query query = entityManager.createQuery(jpql);
         List<Board> boards = query.getResultList();
         List<BoardDto.RecentResponse> recentResponseList = boards.stream().map(board -> {

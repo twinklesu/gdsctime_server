@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import seoultech.gdsc.web.dto.MessageDto;
 
+import java.util.HashMap;
 import java.util.List;
 
 @SpringBootTest
@@ -32,5 +33,16 @@ public class MessageServiceTest {
     public void getDetailMsgTest() throws JsonProcessingException {
         List<MessageDto.Response> res = messageService.getDetailMsg(1, 5);
         System.out.println(objectMapper.writeValueAsString(res));
+    }
+
+    @Test
+    @Transactional
+    public void writeNewMsgTest() {
+        MessageDto.Request req = new MessageDto.Request();
+        req.setContent("댓글로부터 메세지 테스트");
+        req.setId(3);
+        req.setGroup(0);
+        HashMap result = messageService.writeNewMsg(5, req);
+        System.out.println("success test: " + (String) result.get("msg"));
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import seoultech.gdsc.web.dto.LoginDto;
 import seoultech.gdsc.web.dto.UserDto;
 import seoultech.gdsc.web.entity.User;
-import seoultech.gdsc.web.repository.UserRepository;
+import seoultech.gdsc.web.repository.*;
 
 import java.util.Optional;
 
@@ -16,13 +16,26 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final BoardRepository boardRepository;
+    private final MessageRepository messageRepository;
+    private final CommentRepository commentRepository;
+    private final LikedRepository likedRepository;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserService(UserRepository userRepository,
+                       ModelMapper modelMapper,
+                       BoardRepository boardRepository,
+                       MessageRepository messageRepository,
+                       CommentRepository commentRepository,
+                       LikedRepository likedRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.boardRepository = boardRepository;
+        this.messageRepository = messageRepository;
+        this.commentRepository = commentRepository;
+        this.likedRepository = likedRepository;
 
     }
 
@@ -82,6 +95,28 @@ public class UserService {
     회원 탈퇴
      */
     public void deleteUser(int id) {
+        // 탈퇴처리 오바다 이래서 delete_at 두고 글은 남겨두는거구나 디비 접속 너무 많이해
+        boardRepository.findAllByUser_Id(id).forEach(board -> {
+            board.setUser(null);
+            boardRepository.save(board);
+        });
+        messageRepository.findAllByFromUser_Id(id).forEach(message -> {
+            message.setFromUser(null);
+            messageRepository.save(message);
+        });
+        messageRepository.findAllByToUser_Id(id).forEach(message -> {
+            message.setToUser(null);
+            messageRepository.save(message);
+        });
+        commentRepository.findAllByUser_Id(id).forEach(comment -> {
+            comment.setUser(null);
+            commentRepository.save(comment);
+        });
+        likedRepository.findAllByUser_Id(id).forEach(liked -> {
+            liked.setUser(null);
+            likedRepository.save(liked);
+        });
+
         userRepository.delete(userRepository.getById(id));
     }
 

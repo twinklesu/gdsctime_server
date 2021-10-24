@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findAllByBoard_Id(@Param(value = "boardId") int boardId);
+    List<Comment> findAllByUser_Id(@Param(value = "userID") int userId);
 }

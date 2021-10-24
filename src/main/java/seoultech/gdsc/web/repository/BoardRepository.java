@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Integer> {
     List<Board> findAllByBoardCategory_Id(@Param(value = "categoryId") int categoryId);
+    List<Board> findAllByUser_Id(@Param(value = "userId") int userId);
 }

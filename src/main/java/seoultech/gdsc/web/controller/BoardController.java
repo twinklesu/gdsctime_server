@@ -35,8 +35,8 @@ public class BoardController {
     /*
     특정 카테고리의 전체 글 조회
      */
-    @GetMapping("/{category}")
-    public BasicResponse getBoard(@PathVariable int category) {
+    @GetMapping("")
+    public BasicResponse getBoard(@RequestParam int category) {
         List<BoardDto.Response> boardList = boardService.getCategoryList(category);
         return new SuccessResponse<>(boardList);
     }
@@ -116,22 +116,12 @@ public class BoardController {
     }
 
     /*
-    전체 게시글 검색
-     */
-    @PostMapping("/search")
-    public BasicResponse postSearchAll(@RequestBody Map<String, String> reqBody) {
-        String word = reqBody.get("word");
-        List<BoardDto.SearchResponse> res = boardService.searchAll(word);
-        return new SuccessResponse<>(res);
-    }
-
-    /*
     게시판 별 검색
      */
-    @PostMapping("/{category}/search")
-    public BasicResponse postSearchCategory(@PathVariable int category, @RequestBody Map<String, String> reqBody) {
-        String word = reqBody.get("word");
-        List<BoardDto.SearchResponse> res = boardService.searchCategory(category, word);
+    @PostMapping("/search")
+    public BasicResponse postSearchCategory(@RequestParam("category") int category,
+                                            @RequestParam("keyword") String keyword) {
+        List<BoardDto.SearchResponse> res = boardService.searchCategory(category, keyword);
         return new SuccessResponse<>(res);
     }
 

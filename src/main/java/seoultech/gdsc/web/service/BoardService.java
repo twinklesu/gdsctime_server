@@ -142,34 +142,16 @@ public class BoardService {
         return response;
     }
 
-
     /*
-    전체 글 검색
-     */
-    public List<BoardDto.SearchResponse> searchAll(String word) {
-        // jpql은 entity field에 맞춰 작성
-        String jpql = "select board from Board board where board.content like '%" + word + "%' or board.title like '%" + word + "%'";
-        Query query = entityManager.createQuery(jpql);
-        List<Board> boards = query.getResultList();
-        List<BoardDto.SearchResponse> res = boards.stream().map(board -> {
-            BoardDto.SearchResponse boardDto = modelMapper.map(board, BoardDto.SearchResponse.class);
-            boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
-            if (board.getIsSecret()) {
-                boardDto.setNickName("익명");
-            } else {
-                boardDto.setNickName(board.getUser().getNickname());
-            }
-            return boardDto;
-        }).collect(Collectors.toList());
-        return res;
-    }
-
-    /*
-    카테고리 별 글 검색
+    글 검색
      */
     public List<BoardDto.SearchResponse> searchCategory(int category, String word) {
-        // jpql은 entity field에 맞춰 작성
-        String jpql = "select board from Board board where (board.content like '%" + word + "%' or board.title like '%" + word + "%') and board.boardCategory.id = " + category;
+        String jpql;
+        if (category == 0) {
+            jpql = "select board from Board board where board.content like '%" + word + "%' or board.title like '%" + word + "%'";
+        } else {
+            jpql = "select board from Board board where (board.content like '%" + word + "%' or board.title like '%" + word + "%') and board.boardCategory.id = " + category;
+        }
         Query query = entityManager.createQuery(jpql);
         List<Board> boards = query.getResultList();
         List<BoardDto.SearchResponse> res = boards.stream().map(board -> {
@@ -184,6 +166,4 @@ public class BoardService {
         }).collect(Collectors.toList());
         return res;
     }
-
-
 }

@@ -103,6 +103,11 @@ public class BoardController {
     /*
     실시간 게시판
      */
+    @GetMapping("/main/realtime")
+    public BasicResponse getRealtime() {
+        List<BoardDto.DetailResponse> res = boardService.getRealtime();
+        return new SuccessResponse<>(res);
+    }
 
     /*
     카테고리별 핫 게시물

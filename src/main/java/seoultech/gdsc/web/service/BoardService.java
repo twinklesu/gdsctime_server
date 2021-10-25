@@ -12,7 +12,10 @@ import seoultech.gdsc.web.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -165,5 +168,32 @@ public class BoardService {
             return boardDto;
         }).collect(Collectors.toList());
         return res;
+    }
+
+    /*
+    실시간 인기 게시물
+     */
+    public List<BoardDto.DetailResponse> getRealtime() {
+        LocalDateTime dayBefore = LocalDateTime.now().minusDays(1);
+//        String jpql = "SELECT board, board.likeNum + board.commentNum as total" +
+//                "FROM Board board WHERE board.isHot = true order by total DESC, board.createdAt DESC";
+        String sql = "select *, like_num+comment_num as total from board where is_hot = 1 and created_at > DATE_ADD(now(), INTERVAL -24 HOUR) order by total DESC, created_at DESC LIMIT 2";
+//        Query query = entityManager.createQuery(jpql);
+        Query query = entityManager.createNativeQuery(sql, Board.class);
+        query.setMaxResults(2);
+        List<Board> boards = query.getResultList();
+        List<BoardDto.DetailResponse> responses = boards.stream().map(board -> {
+            BoardDto.DetailResponse boardDto = modelMapper.map(board, BoardDto.DetailResponse.class);
+            if (board.getIsSecret()) {
+                boardDto.setNickname("익명");
+                boardDto.setProfilePic("익명프사");
+            } else {
+                boardDto.setNickname(board.getUser().getNickname());
+                boardDto.setProfilePic(board.getUser().getProfilePic());
+            }
+            return boardDto;
+
+        }).collect(Collectors.toList());
+        return responses;
     }
 }

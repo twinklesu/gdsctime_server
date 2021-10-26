@@ -180,7 +180,6 @@ public class BoardService {
         String sql = "select *, like_num+comment_num as total from board where is_hot = 1 and created_at > DATE_ADD(now(), INTERVAL -24 HOUR) order by total DESC, created_at DESC LIMIT 2";
 //        Query query = entityManager.createQuery(jpql);
         Query query = entityManager.createNativeQuery(sql, Board.class);
-        query.setMaxResults(2);
         List<Board> boards = query.getResultList();
         List<BoardDto.DetailResponse> responses = boards.stream().map(board -> {
             BoardDto.DetailResponse boardDto = modelMapper.map(board, BoardDto.DetailResponse.class);

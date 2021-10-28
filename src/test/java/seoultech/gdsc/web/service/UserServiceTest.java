@@ -57,7 +57,6 @@ public class UserServiceTest extends WebApplicationTests {
     @Transactional
     public void userInfoLookupTest() throws JsonProcessingException {
         Optional<UserDto.Response> userDto = userService.userInfoLookup(1);
-        System.out.println("########UserServiceTest: userInfoLookupoTest#########");
         System.out.println(objectMapper.writeValueAsString(userDto));
         System.out.println("########end###########");
     }

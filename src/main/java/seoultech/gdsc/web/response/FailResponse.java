@@ -13,7 +13,6 @@ public class FailResponse<T> extends BasicResponse{
     private T data;
     private String message;
 
-
     public FailResponse(String message, T data) {
         this.message = message;
         this.data = data;

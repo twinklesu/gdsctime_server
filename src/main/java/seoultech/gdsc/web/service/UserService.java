@@ -20,8 +20,7 @@ public class UserService {
     private final MessageRepository messageRepository;
     private final CommentRepository commentRepository;
     private final LikedRepository likedRepository;
-
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository,
@@ -29,19 +28,21 @@ public class UserService {
                        BoardRepository boardRepository,
                        MessageRepository messageRepository,
                        CommentRepository commentRepository,
-                       LikedRepository likedRepository) {
+                       LikedRepository likedRepository,
+                       BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.boardRepository = boardRepository;
         this.messageRepository = messageRepository;
         this.commentRepository = commentRepository;
         this.likedRepository = likedRepository;
+        this.passwordEncoder = passwordEncoder;
 
     }
 
     public Optional<UserDto.Response> userInfoLookup(int id) {
         Optional<User> user = userRepository.findById(id);
-        UserDto.Response userDto = new UserDto.Response();
+        UserDto.Response userDto;
         if (user.isPresent()) {
             userDto = modelMapper.map(user.get(), UserDto.Response.class);
             return Optional.of(userDto);
@@ -67,7 +68,6 @@ public class UserService {
             return "전화번호가 중복되었습니다";
         }
         User newUser = modelMapper.map(user, User.class);
-        // password encode
         String encodePassword = passwordEncoder.encode(user.getPassword());
 
         newUser.setPassword(encodePassword);

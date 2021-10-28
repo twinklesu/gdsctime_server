@@ -8,6 +8,7 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class ApplicationConfig {
@@ -18,6 +19,11 @@ public class ApplicationConfig {
         modelMapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

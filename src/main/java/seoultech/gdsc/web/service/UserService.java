@@ -60,7 +60,7 @@ public class UserService {
             return "이메일이 중복되었습니다";
         }
         // nickname duplicate check
-        if (userRepository.existsUserByNickname(user.getEmail())) {
+        if (userRepository.existsUserByNickname(user.getNickname())) {
             return "닉네임이 중복되었습니다";
         }
         // hp duplicate check

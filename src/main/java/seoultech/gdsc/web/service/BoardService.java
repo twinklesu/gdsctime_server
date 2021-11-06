@@ -11,11 +11,8 @@ import seoultech.gdsc.web.repository.BoardRepository;
 import seoultech.gdsc.web.repository.UserRepository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +23,6 @@ public class BoardService {
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final BoardCategoryRepository boardCategoryRepository;
-    private final EntityManager entityManager;
 
     @Autowired
     public BoardService(BoardRepository boardRepository,
@@ -38,7 +34,6 @@ public class BoardService {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.boardCategoryRepository = boardCategoryRepository;
-        this.entityManager = entityManager;
     }
 
     /*
@@ -95,12 +90,7 @@ public class BoardService {
     각 게시판의 최신 글 조회
      */
     public List<BoardDto.RecentResponse> getRecentBoard(){
-        // jpql은 entity field에 맞춰 작성
-        String jpql = "select board from Board board where board.id in " +
-                "(select max(board.id) from board group by board.boardCategory)" +
-                "and board.boardCategory.id <= 6 order by board.boardCategory.id asc";
-        Query query = entityManager.createQuery(jpql);
-        List<Board> boards = query.getResultList();
+        List<Board> boards = boardRepository.findRecentBoard();
         List<BoardDto.RecentResponse> recentResponseList = boards.stream().map(board -> {
             BoardDto.RecentResponse boardDto = modelMapper.map(board, BoardDto.RecentResponse.class);
             boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
@@ -149,14 +139,12 @@ public class BoardService {
     글 검색
      */
     public List<BoardDto.SearchResponse> searchCategory(int category, String word) {
-        String jpql;
+        List<Board> boards;
         if (category == 0) {
-            jpql = "select board from Board board where board.content like '%" + word + "%' or board.title like '%" + word + "%'";
+            boards = boardRepository.findAllByKeyword(word, word);
         } else {
-            jpql = "select board from Board board where (board.content like '%" + word + "%' or board.title like '%" + word + "%') and board.boardCategory.id = " + category;
+            boards = boardRepository.findAllByCategoryByKeyword(word, word, category);
         }
-        Query query = entityManager.createQuery(jpql);
-        List<Board> boards = query.getResultList();
         List<BoardDto.SearchResponse> res = boards.stream().map(board -> {
             BoardDto.SearchResponse boardDto = modelMapper.map(board, BoardDto.SearchResponse.class);
             boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
@@ -175,12 +163,7 @@ public class BoardService {
      */
     public List<BoardDto.DetailResponse> getRealtime() {
         LocalDateTime dayBefore = LocalDateTime.now().minusDays(1);
-//        String jpql = "SELECT board, board.likeNum + board.commentNum as total" +
-//                "FROM Board board WHERE board.isHot = true order by total DESC, board.createdAt DESC";
-        String sql = "select *, like_num+comment_num as total from board where is_hot = 1 and created_at > DATE_ADD(now(), INTERVAL -24 HOUR) order by total DESC, created_at DESC LIMIT 2";
-//        Query query = entityManager.createQuery(jpql);
-        Query query = entityManager.createNativeQuery(sql, Board.class);
-        List<Board> boards = query.getResultList();
+        List<Board> boards = boardRepository.findRealtime();
         List<BoardDto.DetailResponse> responses = boards.stream().map(board -> {
             BoardDto.DetailResponse boardDto = modelMapper.map(board, BoardDto.DetailResponse.class);
             if (board.getIsSecret()) {

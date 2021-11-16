@@ -39,11 +39,16 @@ public class UserController {
     사용자 정보 조회
      */
     @GetMapping("")
-    public BasicResponse getUser() {
-        int id = (int) session.getAttribute("springSes");
-        Optional<UserDto.Response> userDto = userService.userInfoLookup(id);
-        if (userDto.isPresent()) {
-            return new SuccessResponse<>(userDto.get());
+    public BasicResponse getUser(){
+
+        Object id = session.getAttribute("springSes");
+        if (id==null){
+            return new FailResponse<>("", new EmptyJsonResponse());
+        }else{
+            Optional<UserDto.Response> userDto = userService.userInfoLookup((int)id);
+            if (userDto.isPresent()) {
+                return new SuccessResponse<>(userDto);
+            }
         }
         return new FailResponse<>("", new EmptyJsonResponse());
     }

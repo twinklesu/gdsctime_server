@@ -49,12 +49,7 @@ public class MessageService {
     사용자가 보내거나 받은 메세지 세트들의 최신 메세지만 return
      */
     public List<MessageDto.Response> getAllRecentMsg(int id) {
-        String sql = "select * from message where id in " +
-                        "(select id from (select least(from_user_id, to_user_id) as user1, greatest(from_user_id, to_user_id) as user2, max(id) as id " +
-                        "from message where from_user_id = " + id  + " or to_user_id = " + id + " group by user1, user2) as subtable) " +
-                        "order by created_at desc";
-        Query query = entityManager.createNativeQuery(sql, Message.class);
-        List<Message> messages = query.getResultList();
+        List<Message> messages = messageRepository.findAllRecent(id, id);
         List<MessageDto.Response> res = messages.stream().map(message -> {
             MessageDto.Response msgDto = modelMapper.map(message, MessageDto.Response.class);
             msgDto.setMessageId(message.getId());
@@ -78,10 +73,7 @@ public class MessageService {
         } else {
             otherId = fromId;
         }
-        String param = userId + ", " + otherId;
-        String jpql = "select m from Message m where m.toUser in (" + param + ") and m.fromUser in (" + param + ") order by m.createdAt desc";
-        Query query = entityManager.createQuery(jpql);
-        List<Message> messages = query.getResultList();
+        List<Message> messages = messageRepository.findDetailMessage(userId, otherId);
         List<MessageDto.Response> res = messages.stream().map(message -> {
             MessageDto.Response msgDto = modelMapper.map(message, MessageDto.Response.class);
             msgDto.setMessageId(message.getId());

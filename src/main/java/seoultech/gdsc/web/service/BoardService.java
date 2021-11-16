@@ -162,7 +162,6 @@ public class BoardService {
     실시간 인기 게시물
      */
     public List<BoardDto.DetailResponse> getRealtime() {
-        LocalDateTime dayBefore = LocalDateTime.now().minusDays(1);
         List<Board> boards = boardRepository.findRealtime();
         List<BoardDto.DetailResponse> responses = boards.stream().map(board -> {
             BoardDto.DetailResponse boardDto = modelMapper.map(board, BoardDto.DetailResponse.class);

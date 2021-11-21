@@ -41,16 +41,23 @@ public class CommentService {
             CommentDto.Response commentDto = modelMapper.map(comment, CommentDto.Response.class);
             // "2021-10-04T07:02:29.000+00:00" -> yyMMddhhmm
             commentDto.setCreatedAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMddhhmm")));
-            userRepository.findById(comment.getUser().getId()).ifPresent(user -> {
-                commentDto.setUserId(user.getId());
-            });
-            if (comment.getIsSecret()) {
+            if (comment.getUser() != null) {
+                userRepository.findById(comment.getUser().getId()).ifPresent(user -> {
+                    commentDto.setUserId(user.getId());
+                });
+                if (comment.getIsSecret()) {
+                    commentDto.setNickname("익명");
+                    commentDto.setProfilePic("https://익명사진url");
+                } else {
+                    commentDto.setNickname(comment.getUser().getNickname());
+                    commentDto.setProfilePic(comment.getUser().getProfilePic());
+                }
+            } else {
                 commentDto.setNickname("익명");
                 commentDto.setProfilePic("https://익명사진url");
-            } else {
-                commentDto.setNickname(comment.getUser().getNickname());
-                commentDto.setProfilePic(comment.getUser().getProfilePic());
             }
+
+
             return commentDto;
         }).collect(Collectors.toList());
         return responses;

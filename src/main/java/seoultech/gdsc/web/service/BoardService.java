@@ -50,7 +50,6 @@ public class BoardService {
             BoardDto.Response boardDto = modelMapper.map(board, BoardDto.Response.class);
             // "2021-10-04T07:02:29.000+00:00" -> yyMMdd
             boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
-            boardDto.setBoardCategoryId(board.getBoardCategory().getId());
             return boardDto;
         }).collect(Collectors.toList());
         return responses;
@@ -70,6 +69,7 @@ public class BoardService {
             res.setNickname(board.getUser().getNickname());
             res.setProfilePic(board.getUser().getProfilePic());
         }
+        res.setBoardCategoryId(board.getBoardCategory().getId());
         return res;
     }
 

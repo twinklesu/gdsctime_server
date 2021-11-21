@@ -16,7 +16,7 @@ public class BoardDto {
     @Getter
     @Setter
     public static class Response {
-        private int boardCategoryId;
+        private int id;
         private String title;
         private String content;
         private int likeNum;
@@ -30,6 +30,7 @@ public class BoardDto {
     @Setter
     public static class DetailResponse {
         private int id;
+        private int boardCategoryId;
         private String title;
         private String content;
         private int likeNum;

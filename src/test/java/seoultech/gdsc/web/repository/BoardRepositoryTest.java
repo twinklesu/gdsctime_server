@@ -10,6 +10,7 @@ import seoultech.gdsc.web.WebApplicationTests;
 import seoultech.gdsc.web.entity.Board;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -28,6 +29,17 @@ public class BoardRepositoryTest extends WebApplicationTests {
         List<Board> boardList = boardRepository.findAllByBoardCategory_Id(1);
         System.out.println(objectMapper.writeValueAsString(boardList));
         System.out.println("#########End#############");
+    }
+
+    @Test
+    @Transactional
+    public void findTopIdByUser_IdOrderByCreatedAtDescTest() {
+        Optional<Board> recentPostId = boardRepository.findTopIdByUser_IdOrderByCreatedAtDesc(1);
+        if (recentPostId.isPresent()) {
+            System.out.println(recentPostId.get().getId());
+        } else {
+            System.out.println("실패");
+        }
     }
 
 }

@@ -13,6 +13,7 @@ import seoultech.gdsc.web.service.CommentService;
 
 import javax.persistence.Basic;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -56,8 +57,10 @@ public class BoardController {
     @PostMapping("")
     public BasicResponse postBoard(@RequestBody BoardDto.Request newBoard) {
         int sessionId = (int) session.getAttribute("springSes");
-        boardService.writeNew(newBoard, sessionId);
-        return new SuccessResponse<>(new EmptyJsonResponse());
+        int resultId = boardService.writeNew(newBoard, sessionId);
+        HashMap<String, Integer> result = new HashMap<>();
+        result.put("id", resultId);
+        return new SuccessResponse<>(result);
     }
 
     /*

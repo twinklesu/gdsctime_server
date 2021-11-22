@@ -63,10 +63,6 @@ public class UserService {
         if (userRepository.existsUserByNickname(user.getNickname())) {
             return "닉네임이 중복되었습니다";
         }
-        // hp duplicate check
-        if (userRepository.existsUserByHp(user.getHp())) {
-            return "전화번호가 중복되었습니다";
-        }
         User newUser = modelMapper.map(user, User.class);
         String encodePassword = passwordEncoder.encode(user.getPassword());
 

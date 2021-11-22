@@ -39,7 +39,6 @@ public class UserServiceTest extends WebApplicationTests {
         userReq.setName("Subin Park");
         userReq.setEmail("twinklesu14@gmail.com");
         userReq.setUserId("twinklesu14");
-        userReq.setHp("010-3081-1525");
         userReq.setMajor("itm");
         userReq.setPassword("990104");
         userReq.setNickname("subin");
@@ -90,7 +89,6 @@ public class UserServiceTest extends WebApplicationTests {
         UserDto.Request anotherUser = new UserDto.Request();
         anotherUser.setUserId("temp");
         anotherUser.setPassword("0000");
-        anotherUser.setHp("000-0000-0000");
         anotherUser.setMajor("major");
         anotherUser.setEmail("temp@temp.com");
         anotherUser.setName("temp");

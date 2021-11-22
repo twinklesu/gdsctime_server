@@ -7,10 +7,11 @@ import org.springframework.stereotype.Repository;
 import seoultech.gdsc.web.entity.Board;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Integer> {
-    List<Board> findAllByBoardCategory_Id(@Param(value = "categoryId") int categoryId);
+    List<Board> findAllByBoardCategory_IdOrderByCreatedAtDesc(@Param(value = "categoryId") int categoryId);
     List<Board> findAllByUser_Id(@Param(value = "userId") int userId);
     List<Board> findAllByIsHotOrderByCreatedAtDesc(@Param(value = "isHot") Boolean isHot);
     List<Board> findTop2ByIsHotOrderByCreatedAtDesc(@Param(value = "isHot") Boolean isHot);
@@ -18,6 +19,8 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
     List<Board> findTop2ByBoardCategory_IdOrderByCreatedAtDesc(@Param(value = "boardCategory") int BoardCategory);
     @Query("select board from Board board where board.id in (select max(board.id) from board group by board.boardCategory) and board.boardCategory.id <= 6 order by board.boardCategory.id asc")
     List<Board> findRecentBoard();
+
+    Optional<Board> findTopIdByUser_IdOrderByCreatedAtDesc(@Param(value="userId") int userId);
 
     @Query(value="select *, like_num+comment_num as total from board where is_hot = 1 and created_at > DATE_ADD(now(), INTERVAL -24 HOUR) order by total DESC, created_at DESC LIMIT 2", nativeQuery = true)
     List<Board> findRealtime();

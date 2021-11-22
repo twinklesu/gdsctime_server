@@ -17,7 +17,6 @@ public class UserDto {
         private String name;
         private String nickname;
         private String major;
-        private String hp;
     }
 
     @NoArgsConstructor

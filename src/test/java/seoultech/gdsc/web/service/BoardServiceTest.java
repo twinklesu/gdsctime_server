@@ -45,11 +45,12 @@ public class BoardServiceTest extends WebApplicationTests {
         System.out.println("##########writeNewTest##########");
         BoardDto.Request req = new BoardDto.Request();
         req.setCategoryId(1);
-        req.setTitle("service로 글 작성하기");
+        req.setTitle("글작성 후 id 리턴");
         req.setContent("성공 가즈아아아아아ㅏ아");
         req.setIsSecret(true);
         System.out.println("request: " + objectMapper.writeValueAsString(req));
-        boardService.writeNew(req, 1);
+        int result = boardService.writeNew(req, 1);
+        System.out.println(result);
     }
 
     @Test

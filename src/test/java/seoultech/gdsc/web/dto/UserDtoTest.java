@@ -38,7 +38,6 @@ public class UserDtoTest extends WebApplicationTests {
         req.setName("박수빈");
         req.setNickname("숩니");
         req.setMajor("ITM");
-        req.setHp("01030811524");
         User user = modelMapper.map(req, User.class);
         System.out.println(objectMapper.writeValueAsString(user));
     }

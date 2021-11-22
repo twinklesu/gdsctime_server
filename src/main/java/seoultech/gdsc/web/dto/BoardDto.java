@@ -22,6 +22,7 @@ public class BoardDto {
         private int likeNum;
         private int commentNum;
         private String createdAt;
+        private String nickname;
     }
 
     @NoArgsConstructor

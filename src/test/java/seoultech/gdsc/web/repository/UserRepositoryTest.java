@@ -32,7 +32,6 @@ public class UserRepositoryTest extends WebApplicationTests {
         this.newUser.setName("Subin Park");
         this.newUser.setEmail("twinklesu914@gmail.com");
         this.newUser.setUserId("twinklesu");
-        this.newUser.setHp("010-3081-1524");
         this.newUser.setMajor("itm");
         this.newUser.setPassword("990104");
         this.newUser.setNickname("subin");
@@ -45,7 +44,6 @@ public class UserRepositoryTest extends WebApplicationTests {
         if (getUser.isPresent()) {
             assertThat(getUser.get().getUserId()).isEqualTo(this.newUser.getUserId());
             assertThat(getUser.get().getName()).isEqualTo(this.newUser.getName());
-            assertThat(getUser.get().getHp()).isEqualTo(this.newUser.getHp());
             assertThat(getUser.get().getMajor()).isEqualTo(this.newUser.getMajor());
             assertThat(getUser.get().getNickname()).isEqualTo(this.newUser.getNickname());
             assertThat(getUser.get().getPassword()).isEqualTo(this.newUser.getPassword());
@@ -64,7 +62,6 @@ public class UserRepositoryTest extends WebApplicationTests {
         this.newUser.setName("Subin Park");
         this.newUser.setEmail("twinklesu914@gmail.com");
         this.newUser.setUserId("twinklesu");
-        this.newUser.setHp("010-3081-1524");
         this.newUser.setMajor("itm");
         this.newUser.setPassword("990104");
         this.newUser.setNickname("subin");

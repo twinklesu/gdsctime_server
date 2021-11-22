@@ -33,9 +33,6 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String hp;
-
-    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)

@@ -44,12 +44,17 @@ public class BoardService {
         if (categoryId == 7) {
             boards = boardRepository.findAllByIsHotOrderByCreatedAtDesc(true);
         } else {
-            boards = boardRepository.findAllByBoardCategory_Id(categoryId);
+            boards = boardRepository.findAllByBoardCategory_IdOrderByCreatedAtDesc(categoryId);
         }
         List<BoardDto.Response> responses = boards.stream().map(board -> {
             BoardDto.Response boardDto = modelMapper.map(board, BoardDto.Response.class);
             // "2021-10-04T07:02:29.000+00:00" -> yyMMdd
             boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
+            if (board.getIsSecret()) {
+                boardDto.setNickname("익명");
+            } else {
+                boardDto.setNickname(board.getUser().getNickname());
+            }
             return boardDto;
         }).collect(Collectors.toList());
         return responses;
@@ -76,7 +81,7 @@ public class BoardService {
     /*
     게시글 작성
      */
-    public void writeNew(BoardDto.Request request, int id) {
+    public int writeNew(BoardDto.Request request, int id) {
         Board newBoard = modelMapper.map(request, Board.class);
         Optional<User> writer = userRepository.findById(id);
         if (writer.isPresent()){
@@ -84,6 +89,12 @@ public class BoardService {
         }
         boardCategoryRepository.findById(request.getCategoryId()).ifPresent(newBoard::setBoardCategory); // 카테고리 연결
         boardRepository.save(newBoard);
+        // 방금 작성한 글 id 리턴해주기
+        Optional<Board> postBoard = boardRepository.findTopIdByUser_IdOrderByCreatedAtDesc(id);
+        if (postBoard.isPresent()){
+            return postBoard.get().getId();
+        }
+        return -1;
     }
 
     /*

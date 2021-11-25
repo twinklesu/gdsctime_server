@@ -176,6 +176,7 @@ public class BoardService {
         List<Board> boards = boardRepository.findRealtime();
         List<BoardDto.DetailResponse> responses = boards.stream().map(board -> {
             BoardDto.DetailResponse boardDto = modelMapper.map(board, BoardDto.DetailResponse.class);
+            boardDto.setBoardCategoryId(board.getBoardCategory().getId());
             if (board.getIsSecret()) {
                 boardDto.setNickname("익명");
                 boardDto.setProfilePic("익명프사");

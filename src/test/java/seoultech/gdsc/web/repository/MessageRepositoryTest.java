@@ -38,4 +38,11 @@ public class MessageRepositoryTest extends WebApplicationTests {
         message.setContent("1이 5에게 보내는 메세지 스프링에서");
         messageRepository.save(message);
     }
+
+    @Test
+    @Transactional
+    public void findDetailMessageTest() throws JsonProcessingException {
+        List<Message> messageList = messageRepository.findDetailMessage(1, 5);
+        System.out.println(objectMapper.writeValueAsString(messageList));
+    }
 }

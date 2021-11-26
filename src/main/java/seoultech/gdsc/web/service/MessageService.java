@@ -53,7 +53,7 @@ public class MessageService {
         List<MessageDto.Response> res = messages.stream().map(message -> {
             MessageDto.Response msgDto = modelMapper.map(message, MessageDto.Response.class);
             msgDto.setMessageId(message.getId());
-            msgDto.setCreatedAt(message.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMddhhmm")));
+            msgDto.setCreatedAt(message.getCreatedAt().format(DateTimeFormatter.ofPattern("yy/MM/dd hh:mm")));
             msgDto.setIsMine(message.getFromUser().getId() == id); // 보낸사람이 현재 사용자면 true, 아니면 false
             return msgDto;
         }).collect(Collectors.toList());
@@ -77,7 +77,7 @@ public class MessageService {
         List<MessageDto.Response> res = messages.stream().map(message -> {
             MessageDto.Response msgDto = modelMapper.map(message, MessageDto.Response.class);
             msgDto.setMessageId(message.getId());
-            msgDto.setCreatedAt(message.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMddhhmm")));
+            msgDto.setCreatedAt(message.getCreatedAt().format(DateTimeFormatter.ofPattern("yy/MM/dd hh:mm")));
             msgDto.setIsMine(message.getFromUser().getId() == userId); // 보낸사람이 현재 사용자면 true, 아니면 false
             return msgDto;
         }).collect(Collectors.toList());

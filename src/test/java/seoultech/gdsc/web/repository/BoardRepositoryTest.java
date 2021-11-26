@@ -26,8 +26,8 @@ public class BoardRepositoryTest extends WebApplicationTests {
     @Transactional
     public void findAllByCategoryTest() throws JsonProcessingException {
         System.out.println("#######findAllByCategoryTest########");
-        List<Board> boardList = boardRepository.findAllByBoardCategory_Id(1);
-        System.out.println(objectMapper.writeValueAsString(boardList));
+//        List<Board> boardList = boardRepository.findAllByBoardCategory_Id(1);
+//        System.out.println(objectMapper.writeValueAsString(boardList));
         System.out.println("#########End#############");
     }
 

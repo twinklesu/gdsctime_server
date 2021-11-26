@@ -104,6 +104,9 @@ public class BoardService {
         List<Board> boards = boardRepository.findRecentBoard();
         List<BoardDto.RecentResponse> recentResponseList = boards.stream().map(board -> {
             BoardDto.RecentResponse boardDto = modelMapper.map(board, BoardDto.RecentResponse.class);
+            LocalDateTime before24 = LocalDateTime.now().minusDays(1);
+            Boolean isNew = board.getCreatedAt().isAfter(before24);
+            boardDto.setIsNew(isNew);
             boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
             boardDto.setBoardCategoryId(board.getBoardCategory().getId());
             return boardDto;

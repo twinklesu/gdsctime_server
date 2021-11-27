@@ -126,7 +126,7 @@ public class BoardController {
     /*
     게시판 별 검색
      */
-    @PostMapping("/search")
+    @GetMapping("/search")
     public BasicResponse postSearchCategory(@RequestParam("category") int category,
                                             @RequestParam("keyword") String keyword) {
         List<BoardDto.SearchResponse> res = boardService.searchCategory(category, keyword);

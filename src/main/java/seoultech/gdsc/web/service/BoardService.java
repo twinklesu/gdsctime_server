@@ -161,11 +161,11 @@ public class BoardService {
         }
         List<BoardDto.SearchResponse> res = boards.stream().map(board -> {
             BoardDto.SearchResponse boardDto = modelMapper.map(board, BoardDto.SearchResponse.class);
-            boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("yyMMdd")));
+            boardDto.setCreatedAt(board.getCreatedAt().format(DateTimeFormatter.ofPattern("MM/dd")));
             if (board.getIsSecret()) {
-                boardDto.setNickName("익명");
+                boardDto.setNickname("익명");
             } else {
-                boardDto.setNickName(board.getUser().getNickname());
+                boardDto.setNickname(board.getUser().getNickname());
             }
             return boardDto;
         }).collect(Collectors.toList());

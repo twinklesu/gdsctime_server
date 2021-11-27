@@ -64,7 +64,7 @@ public class BoardDto {
         private String content;
         private int likeNum;
         private int commentNum;
-        private String nickName;
+        private String nickname;
         private String createdAt;
     }
 

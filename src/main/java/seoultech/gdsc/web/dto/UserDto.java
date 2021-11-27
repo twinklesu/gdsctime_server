@@ -30,6 +30,7 @@ public class UserDto {
         private String nickname;
         private Boolean isAuth;
         private String profilePic;
+        private String major;
     }
 
 
